@@ -1,17 +1,16 @@
 import 'dart:ffi';
-import 'package:ffi/ffi.dart' as pkg_ffi;
 
-class Timeval extends Struct {
-  @pkg_ffi.Long()
+base class Timeval extends Struct {
+  @Long()
   external int tv_sec;
 
   @Susecond()
   external int tv_usec;
 }
 
-/// [pkg_ffi.Long] on Linux
-/// [pkg_ffi.Int] on macOS
-/// [pkg_ffi.Long] on Windows
+/// [Long] on Linux
+/// [Int] on macOS
+/// [Long] on Windows
 @AbiSpecificIntegerMapping({
   Abi.linuxArm: Int32(),
   Abi.linuxArm64: Int64(),
@@ -23,13 +22,13 @@ class Timeval extends Struct {
   Abi.windowsIA32: Int32(),
   Abi.windowsX64: Int32(),
 })
-class Susecond extends AbiSpecificInteger {
+base class Susecond extends AbiSpecificInteger {
   const Susecond();
 }
 
-/// [pkg_ffi.Long] on Linux
-/// [pkg_ffi.Long] on macOS
-/// [pkg_ffi.LongLong] on Windows
+/// [Long] on Linux
+/// [Long] on macOS
+/// [LongLong] on Windows
 @AbiSpecificIntegerMapping({
   Abi.linuxArm: Int32(),
   Abi.linuxArm64: Int64(),
@@ -41,6 +40,6 @@ class Susecond extends AbiSpecificInteger {
   Abi.windowsIA32: Int64(),
   Abi.windowsX64: Int64(),
 })
-class Ssize extends AbiSpecificInteger {
+base class Ssize extends AbiSpecificInteger {
   const Ssize();
 }

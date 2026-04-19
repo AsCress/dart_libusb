@@ -3,19 +3,22 @@ import 'dart:io';
 
 import 'package:ffi/ffi.dart' show calloc;
 import 'package:convert/convert.dart';
-import 'package:libusb/libusb.dart';
+import 'package:dart_libusb/dart_libusb.dart';
 
 final DynamicLibrary Function() loadLibrary = () {
   if (Platform.isWindows) {
     return DynamicLibrary.open(
-        '${Directory.current.path}/libusb-1.0/libusb-1.0.dll');
+      '${Directory.current.path}/libusb-1.0/libusb-1.0.dll',
+    );
   }
   if (Platform.isMacOS) {
     return DynamicLibrary.open(
-        '${Directory.current.path}/libusb-1.0/libusb-1.0.dylib');
+      '${Directory.current.path}/libusb-1.0/libusb-1.0.dylib',
+    );
   } else if (Platform.isLinux) {
     return DynamicLibrary.open(
-        '${Directory.current.path}/libusb-1.0/libusb-1.0.so');
+      '${Directory.current.path}/libusb-1.0/libusb-1.0.so',
+    );
   }
   throw 'libusb dynamic library not found';
 };

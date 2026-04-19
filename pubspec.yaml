@@ -1,10 +1,17 @@
-name: libusb
-description: Dart wrapper via `dart:ffi` for https://github.com/libusb/libusb
-version: 0.4.23-dev.1+1
-homepage: https://github.com/woodemi/libusb.dart
+name: dart_libusb
+description: A fork of the libusb Dart package with updated dependencies. Provides Dart FFI bindings for the libusb native library on Linux, macOS, and Windows.
+version: 1.0.0
+homepage: https://github.com/AsCress/dart_libusb
+issue_tracker: https://github.com/AsCress/dart_libusb/issues
+
+topics:
+  - usb
+  - ffi
+  - hardware
+  - libusb
 
 environment:
-  sdk: '>=2.16.0-124.0.dev <3.0.0'
+  sdk: ^3.11.0
 
 platforms:
   linux:
@@ -12,11 +19,10 @@ platforms:
   windows:
 
 dependencies:
-  ffi: ^1.2.0-dev.0
+  ffi: ^2.2.0
 
 dev_dependencies:
-  pedantic: ^1.10.0
-  ffigen: ^5.0.0-dev.1
+  ffigen: ^20.1.1
   test: ^1.16.3
   convert: ^3.0.0
 
@@ -27,10 +33,10 @@ ffigen:
   headers:
     entry-points:
       - 'libusb-1.0/libusb.h'
-    include-directives: # include only these header files and necessary structs from other header files
+    include-directives:
       - '**libusb.h'
   library-imports:
-    pkg_libusb: 'package:libusb/src/libusb_base.dart'
+    pkg_libusb: 'package:dart_libusb/src/libusb_base.dart'
   type-map:
     'typedefs':
       'ssize_t':

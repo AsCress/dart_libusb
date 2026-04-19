@@ -2,20 +2,23 @@ import 'dart:convert';
 import 'dart:ffi';
 import 'dart:io';
 
-import 'package:ffi/ffi.dart' show UnsignedChar, calloc;
-import 'package:libusb/libusb.dart';
+import 'package:ffi/ffi.dart' show calloc;
+import 'package:dart_libusb/dart_libusb.dart';
 
 final DynamicLibrary Function() loadLibrary = () {
   if (Platform.isWindows) {
     return DynamicLibrary.open(
-        '${Directory.current.path}/libusb-1.0/libusb-1.0.dll');
+      '${Directory.current.path}/libusb-1.0/libusb-1.0.dll',
+    );
   }
   if (Platform.isMacOS) {
     return DynamicLibrary.open(
-        '${Directory.current.path}/libusb-1.0/libusb-1.0.dylib');
+      '${Directory.current.path}/libusb-1.0/libusb-1.0.dylib',
+    );
   } else if (Platform.isLinux) {
     return DynamicLibrary.open(
-        '${Directory.current.path}/libusb-1.0/libusb-1.0.so');
+      '${Directory.current.path}/libusb-1.0/libusb-1.0.so',
+    );
   }
   throw 'libusb dynamic library not found';
 };
@@ -52,7 +55,8 @@ class QuickUsb {
   }
 
   Iterable<MapEntry<String, String>> _iterateDeviceProduct(
-      Pointer<Pointer<libusb_device>> deviceList) sync* {
+    Pointer<Pointer<libusb_device>> deviceList,
+  ) sync* {
     var descPtr = calloc<libusb_device_descriptor>();
     var devHandlePtr = calloc<Pointer<libusb_device_handle>>();
     final strDescLength = 42;
@@ -60,7 +64,12 @@ class QuickUsb {
 
     for (var i = 0; deviceList[i] != nullptr; i++) {
       var deviceProduct = _getDeviceProduct(
-          deviceList[i], descPtr, devHandlePtr, strDescPtr, strDescLength);
+        deviceList[i],
+        descPtr,
+        devHandlePtr,
+        strDescPtr,
+        strDescLength,
+      );
       if (deviceProduct != null) yield deviceProduct;
     }
 
@@ -99,7 +108,12 @@ class QuickUsb {
 
     try {
       var langDesc = _libusb.inline_libusb_get_string_descriptor(
-          devHandle, 0, 0, strDescPtr, strDescLength);
+        devHandle,
+        0,
+        0,
+        strDescPtr,
+        strDescLength,
+      );
       if (langDesc < 0) {
         print('$idDevice langDesc error: ${_libusb.describeError(langDesc)}');
         return MapEntry(idDevice, '');
@@ -107,12 +121,20 @@ class QuickUsb {
       var langId = strDescPtr[2] << 8 | strDescPtr[3];
 
       var prodDesc = _libusb.inline_libusb_get_string_descriptor(
-          devHandle, descPtr.ref.iProduct, langId, strDescPtr, strDescLength);
+        devHandle,
+        descPtr.ref.iProduct,
+        langId,
+        strDescPtr,
+        strDescLength,
+      );
       if (prodDesc < 0) {
         print('$idDevice prodDesc error: ${_libusb.describeError(prodDesc)}');
         return MapEntry(idDevice, '');
       }
-      return MapEntry(idDevice, utf8.decode(strDescPtr.cast<Uint8>().asTypedList(prodDesc)));
+      return MapEntry(
+        idDevice,
+        utf8.decode(strDescPtr.cast<Uint8>().asTypedList(prodDesc)),
+      );
     } finally {
       _libusb.libusb_close(devHandle);
     }
@@ -144,9 +166,9 @@ extension LibusbInline on Libusb {
   ) {
     return libusb_control_transfer(
       dev_handle,
-      libusb_endpoint_direction.LIBUSB_ENDPOINT_IN,
-      libusb_standard_request.LIBUSB_REQUEST_GET_DESCRIPTOR,
-      libusb_descriptor_type.LIBUSB_DT_STRING << 8 | desc_index,
+      libusb_endpoint_direction.LIBUSB_ENDPOINT_IN.value,
+      libusb_standard_request.LIBUSB_REQUEST_GET_DESCRIPTOR.value,
+      libusb_descriptor_type.LIBUSB_DT_STRING.value << 8 | desc_index,
       langid,
       data,
       length,
