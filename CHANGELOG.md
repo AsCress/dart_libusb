@@ -1,3 +1,7 @@
+## 1.0.1
+
+- Updated dependencies: `test` to `1.31.1`
+
 ## 1.0.0
  
 - Forked from [`libusb`](https://pub.dev/packages/libusb)

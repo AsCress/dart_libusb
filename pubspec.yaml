@@ -1,6 +1,6 @@
 name: dart_libusb
 description: A fork of the libusb Dart package with updated dependencies. Provides Dart FFI bindings for the libusb native library on Linux, macOS, and Windows.
-version: 1.0.0
+version: 1.0.1
 homepage: https://github.com/AsCress/dart_libusb
 issue_tracker: https://github.com/AsCress/dart_libusb/issues
 
@@ -23,7 +23,7 @@ dependencies:
 
 dev_dependencies:
   ffigen: ^20.1.1
-  test: ^1.16.3
+  test: ^1.31.1
   convert: ^3.0.0
 
 ffigen:
